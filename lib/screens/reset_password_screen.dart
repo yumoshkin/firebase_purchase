@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:firebase_purchase/cubits/auth/auth_cubit.dart';
 import 'package:firebase_purchase/utils/functions.dart';
+import 'package:firebase_purchase/widgets/form_field_email.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -51,32 +52,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                const SizedBox(height: 8),
+                const SizedBox(height: 16),
                 const Text(
                   'Введите свою почту',
                   style: TextStyle(
-                    fontSize: 20111,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black54,
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(top: 24),
-                  height: 82,
-                  child: TextFormField(
-                    controller: _emailController,
-                    autovalidateMode: _isAutovalidate
-                        ? AutovalidateMode.onUserInteraction
-                        : AutovalidateMode.disabled,
-                    decoration: const InputDecoration(
-                      labelText: 'Адрес электронной почты *',
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: validateEmail,
-                  ),
+                const SizedBox(height: 32),
+                FormFieldEmail(
+                  controller: _emailController,
+                  labelText: 'Адрес электронной почты *',
+                  isAutovalidate: _isAutovalidate,
                 ),
-                // const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 SizedBox(
                   width: 300,
                   child: ElevatedButton(

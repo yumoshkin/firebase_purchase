@@ -6,6 +6,8 @@ import 'package:firebase_purchase/screens/home_screen.dart';
 import 'package:firebase_purchase/screens/reset_password_screen.dart';
 import 'package:firebase_purchase/screens/signup_screen.dart';
 import 'package:firebase_purchase/utils/functions.dart';
+import 'package:firebase_purchase/widgets/form_field_email.dart';
+import 'package:firebase_purchase/widgets/form_field_password.dart';
 
 class SigninForm extends StatefulWidget {
   const SigninForm({Key? key}) : super(key: key);
@@ -18,7 +20,7 @@ class _SigninFormState extends State<SigninForm> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isPasswordVisible = false;
+  bool _isPasswordObscure = true;
   bool _isAutovalidate = false;
 
   @override
@@ -30,7 +32,7 @@ class _SigninFormState extends State<SigninForm> {
 
   void togglePasswordVisibility() {
     setState(() {
-      _isPasswordVisible = !_isPasswordVisible;
+      _isPasswordObscure = !_isPasswordObscure;
     });
   }
 
@@ -71,114 +73,59 @@ class _SigninFormState extends State<SigninForm> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              _emailField(),
-              _passwordField(),
-              _resetPasswordButton(),
-              _signinButton(),
-              _signupButton(),
+              const SizedBox(height: 16),
+              FormFieldEmail(
+                controller: _emailController,
+                labelText: 'Адрес электронной почты *',
+                isAutovalidate: _isAutovalidate,
+              ),
+              const SizedBox(height: 16),
+              FormFieldPassword(
+                controller: _passwordController,
+                labelText: 'Пароль *',
+                isAutovalidate: _isAutovalidate,
+                isPasswordObscure: _isPasswordObscure,
+                togglePasswordVisibility: togglePasswordVisibility,
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ResetPasswordScreen(),
+                    ),
+                  ),
+                  child: const Text(
+                    'Забыли пароль?',
+                    style: TextStyle(fontSize: 16, color: Colors.teal),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 300,
+                child: ElevatedButton(
+                  onPressed: () => signin(context),
+                  child: const Text(
+                    'Войти',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignupScreen(),
+                  ),
+                ),
+                child: const Text(
+                  'Нет регистрации? Зарегистрируйтесь',
+                  style: TextStyle(fontSize: 16, color: Colors.teal),
+                ),
+              ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _emailField() {
-    return Container(
-      margin: const EdgeInsets.only(top: 16),
-      height: 82,
-      child: TextFormField(
-        controller: _emailController,
-        autovalidateMode: _isAutovalidate
-            ? AutovalidateMode.onUserInteraction
-            : AutovalidateMode.disabled,
-        decoration: const InputDecoration(
-          labelText: 'Адрес электронной почты *',
-          border: OutlineInputBorder(),
-          prefixIcon: Icon(
-            Icons.mail,
-          ),
-        ),
-        keyboardType: TextInputType.emailAddress,
-        validator: validateEmail,
-      ),
-    );
-  }
-
-  Widget _passwordField() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16),
-      child: TextFormField(
-        controller: _passwordController,
-        autovalidateMode: _isAutovalidate
-            ? AutovalidateMode.onUserInteraction
-            : AutovalidateMode.disabled,
-        obscureText: !_isPasswordVisible,
-        decoration: InputDecoration(
-          labelText: 'Пароль *',
-          border: const OutlineInputBorder(),
-          prefixIcon: const Icon(
-            Icons.lock,
-          ),
-          suffixIcon: IconButton(
-            icon: Icon(
-                !_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
-            onPressed: togglePasswordVisibility,
-          ),
-        ),
-        keyboardType: TextInputType.visiblePassword,
-        validator: validatePassword,
-      ),
-    );
-  }
-
-  Widget _resetPasswordButton() {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: TextButton(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const ResetPasswordScreen(),
-          ),
-        ),
-        child: const Text(
-          'Забыли пароль?',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.teal,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _signinButton() {
-    return SizedBox(
-      width: 300,
-      child: ElevatedButton(
-        onPressed: () => signin(context),
-        child: const Text(
-          'Войти',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
-    );
-  }
-
-  Widget _signupButton() {
-    return TextButton(
-      onPressed: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const SignupScreen(),
-        ),
-      ),
-      child: const Text(
-        'Нет регистрации? Зарегистрируйтесь',
-        style: TextStyle(
-          fontSize: 16,
-          color: Colors.teal,
         ),
       ),
     );

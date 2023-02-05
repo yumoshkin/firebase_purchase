@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_purchase/cubits/auth/auth_cubit.dart';
 import 'package:firebase_purchase/screens/home_screen.dart';
 import 'package:firebase_purchase/utils/functions.dart';
+import 'package:firebase_purchase/widgets/form_field_email.dart';
+import 'package:firebase_purchase/widgets/form_field_password.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -17,6 +19,7 @@ class _SignUpScreen extends State<SignupScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordConfirmationController = TextEditingController();
+  bool _isPasswordObscure = true;
   bool _isAutovalidate = false;
 
   @override
@@ -25,6 +28,12 @@ class _SignUpScreen extends State<SignupScreen> {
     _passwordController.dispose();
     _passwordConfirmationController.dispose();
     super.dispose();
+  }
+
+  void togglePasswordVisibility() {
+    setState(() {
+      _isPasswordObscure = !_isPasswordObscure;
+    });
   }
 
   void signup(BuildContext context) async {
@@ -68,7 +77,7 @@ class _SignUpScreen extends State<SignupScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 16),
                   const Text(
                     'Заполните поля для регистрации',
                     style: TextStyle(
@@ -77,10 +86,29 @@ class _SignUpScreen extends State<SignupScreen> {
                       color: Colors.black54,
                     ),
                   ),
-                  _emailField(),
-                  _passwordField(),
-                  _passwordConfirmationField(),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 32),
+                  FormFieldEmail(
+                    controller: _emailController,
+                    labelText: 'Адрес электронной почты *',
+                    isAutovalidate: _isAutovalidate,
+                  ),
+                  const SizedBox(height: 16),
+                  FormFieldPassword(
+                    controller: _passwordController,
+                    labelText: 'Пароль *',
+                    isAutovalidate: _isAutovalidate,
+                    isPasswordObscure: _isPasswordObscure,
+                    togglePasswordVisibility: togglePasswordVisibility,
+                  ),
+                  const SizedBox(height: 16),
+                  FormFieldPassword(
+                    controller: _passwordConfirmationController,
+                    labelText: 'Подтверждение пароля *',
+                    isAutovalidate: _isAutovalidate,
+                    isPasswordObscure: _isPasswordObscure,
+                    togglePasswordVisibility: togglePasswordVisibility,
+                  ),
+                  const SizedBox(height: 12),
                   SizedBox(
                     width: 300,
                     child: ElevatedButton(
@@ -96,65 +124,6 @@ class _SignUpScreen extends State<SignupScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _emailField() {
-    return Container(
-      margin: const EdgeInsets.only(top: 24),
-      height: 82,
-      child: TextFormField(
-        controller: _emailController,
-        autovalidateMode: _isAutovalidate
-            ? AutovalidateMode.onUserInteraction
-            : AutovalidateMode.disabled,
-        decoration: const InputDecoration(
-          labelText: 'Адрес электронной почты *',
-          border: OutlineInputBorder(),
-        ),
-        keyboardType: TextInputType.emailAddress,
-        validator: validateEmail,
-      ),
-    );
-  }
-
-  Widget _passwordField() {
-    return Container(
-      margin: const EdgeInsets.only(top: 16),
-      height: 82,
-      child: TextFormField(
-        controller: _passwordController,
-        autovalidateMode: _isAutovalidate
-            ? AutovalidateMode.onUserInteraction
-            : AutovalidateMode.disabled,
-        obscureText: true,
-        decoration: const InputDecoration(
-          labelText: 'Пароль *',
-          border: OutlineInputBorder(),
-        ),
-        keyboardType: TextInputType.visiblePassword,
-        validator: validatePassword,
-      ),
-    );
-  }
-
-  Widget _passwordConfirmationField() {
-    return Container(
-      margin: const EdgeInsets.only(top: 16),
-      height: 82,
-      child: TextFormField(
-        controller: _passwordConfirmationController,
-        autovalidateMode: _isAutovalidate
-            ? AutovalidateMode.onUserInteraction
-            : AutovalidateMode.disabled,
-        obscureText: true,
-        decoration: const InputDecoration(
-          labelText: 'Подтверждение пароля *',
-          border: OutlineInputBorder(),
-        ),
-        keyboardType: TextInputType.visiblePassword,
-        validator: validatePassword,
       ),
     );
   }
